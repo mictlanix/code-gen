@@ -1,0 +1,19 @@
+﻿using System.Data.Common;
+
+namespace @(Model.Namespace).DAL.Repositories {
+	public abstract class RepositoryBase {
+		protected DbTransaction Transaction { get; private set; }
+		protected DbConnection Connection { get; private set; }
+
+		public RepositoryBase (DbConnection connection)
+		{
+			Connection = connection;
+		}
+
+		public RepositoryBase (DbTransaction transaction)
+		{
+			Transaction = transaction;
+			Connection = transaction.Connection;
+		}
+	}
+}

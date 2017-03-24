@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mictlanix.CodeGen.My2Json", "Mictlanix.CodeGen.My2Json\Mictlanix.CodeGen.My2Json.csproj", "{BBCA490E-4258-49AF-A309-1CD0B2784C63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mictlanix.CodeGen.Entities", "Mictlanix.CodeGen.Entities\Mictlanix.CodeGen.Entities.csproj", "{6FA63E10-FD84-4646-9E97-65C83DE642E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mictlanix.CodeGen.Core", "Mictlanix.CodeGen.Core\Mictlanix.CodeGen.Core.csproj", "{1388DA57-F2C2-4985-A4C5-44BE9A822EEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBCA490E-4258-49AF-A309-1CD0B2784C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBCA490E-4258-49AF-A309-1CD0B2784C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBCA490E-4258-49AF-A309-1CD0B2784C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBCA490E-4258-49AF-A309-1CD0B2784C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FA63E10-FD84-4646-9E97-65C83DE642E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA63E10-FD84-4646-9E97-65C83DE642E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA63E10-FD84-4646-9E97-65C83DE642E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA63E10-FD84-4646-9E97-65C83DE642E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1388DA57-F2C2-4985-A4C5-44BE9A822EEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1388DA57-F2C2-4985-A4C5-44BE9A822EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1388DA57-F2C2-4985-A4C5-44BE9A822EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1388DA57-F2C2-4985-A4C5-44BE9A822EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,10 @@
+﻿using System;
+
+namespace @(Model.Namespace).Entities {
+	public partial class @Model.Name {
+	@foreach(var prop in @Model.Properties) {
+		<text>		public @prop.Type @prop.Name { get; set; }
+</text>
+	}
+	}
+}

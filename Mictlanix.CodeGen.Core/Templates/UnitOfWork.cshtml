@@ -1,0 +1,149 @@
+﻿using System;
+using System.Data;
+using System.Data.Common;
+using System.Threading.Tasks;
+using @(Model.Namespace).DAL.Repositories;
+
+namespace @(Model.Namespace).DAL {
+	public class UnitOfWork : IUnitOfWork {
+		bool disposed = false;
+		DbConnection connection;
+		DbTransaction transaction;
+		@foreach(var entity in @Model.Entities) {
+		<text>		I@(entity.PluralName)Repository @(entity.PluralTable)_repository;
+</text>
+		}
+
+		public UnitOfWork (DbConnection dbConnection)
+		{
+			connection = dbConnection;
+		}
+
+		@foreach(var entity in @Model.Entities) {
+		<text>		public I@(entity.PluralName)Repository @entity.PluralName {
+			get {
+				if (@(entity.PluralTable)_repository == null) {
+					if (transaction == null)
+						@(entity.PluralTable)_repository = new @(entity.PluralName)Repository (connection);
+					else
+						@(entity.PluralTable)_repository = new @(entity.PluralName)Repository (transaction);
+				}
+
+				return @(entity.PluralTable)_repository;
+			}
+		}
+
+</text>
+		}
+		void ResetRepositories ()
+		{
+			@foreach(var entity in @Model.Entities) {
+			<text>			@(entity.PluralTable)_repository = null;
+</text>
+			}
+		}
+
+		public void BeginTransaction ()
+		{
+			BeginTransaction (IsolationLevel.ReadCommitted);
+		}
+
+		public void BeginTransaction (IsolationLevel isolationLevel)
+		{
+			if (connection.State == ConnectionState.Closed) {
+				connection.Open ();
+			}
+
+			transaction = connection.BeginTransaction (isolationLevel);
+			ResetRepositories ();
+		}
+
+		public void Commit ()
+		{
+			try {
+				transaction.Commit ();
+			} catch {
+				transaction.Commit ();
+				throw;
+			} finally {
+				transaction.Dispose ();
+				transaction = null;
+				ResetRepositories ();
+			}
+		}
+
+		public async Task BeginTransactionAsync ()
+		{
+			await BeginTransactionAsync (IsolationLevel.ReadCommitted).ConfigureAwait (false);
+		}
+
+		public async Task BeginTransactionAsync (IsolationLevel isolationLevel)
+		{
+			if (connection.State == ConnectionState.Closed) {
+				await connection.OpenAsync ().ConfigureAwait (false);
+			}
+
+			transaction = await Task.Run (() => connection.BeginTransaction (isolationLevel)).ConfigureAwait (false);
+			ResetRepositories ();
+		}
+
+		public async Task CommitAsync ()
+		{
+			try {
+				await Task.Run (() => transaction.Commit ()).ConfigureAwait (false);
+			} catch {
+				await Task.Run (() => transaction.Rollback ()).ConfigureAwait (false);
+				throw;
+			} finally {
+				transaction.Dispose ();
+				transaction = null;
+				ResetRepositories ();
+			}
+		}
+
+		public async Task SetChecksAsync (bool state)
+		{
+			if (connection.State == ConnectionState.Closed) {
+				await connection.OpenAsync ().ConfigureAwait (false);
+			}
+
+			using (var cmd = connection.CreateCommand ()) {
+				cmd.CommandText = "SET unique_checks = " + (state ? "1" : "0");
+				await cmd.ExecuteNonQueryAsync ().ConfigureAwait (false);
+				cmd.CommandText = "SET foreign_key_checks = " + (state ? "1" : "0");
+				await cmd.ExecuteNonQueryAsync ().ConfigureAwait (false);
+			}
+		}
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		void Dispose (bool disposing)
+		{
+			if (!disposed) {
+				if (disposing) {
+					if (transaction != null) {
+						transaction.Rollback ();
+						transaction.Dispose ();
+						transaction = null;
+					}
+
+					if (connection != null) {
+						connection.Dispose ();
+						connection = null;
+					}
+				}
+
+				disposed = true;
+			}
+		}
+
+		~UnitOfWork ()
+		{
+			Dispose (false);
+		}
+	}
+}

@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using @(Model.Namespace).Common;
+using @(Model.Namespace).Entities;
+@{
+	var key_params = "";
+	var name_prop = Model.Properties [0];
+	var status_prop = Model.Properties [0];
+
+	name_prop = null;
+	status_prop = null;
+
+	foreach (var prop in Model.Properties) {
+		if (prop.IsPrimaryKey) {
+			var camel_name = prop.Name.Substring (0, 1).ToLower () + prop.Name.Substring (1);
+
+			if (camel_name == "object") {
+				camel_name = "@object";
+			}
+
+			if (key_params.Length > 0) {
+				key_params += ", ";
+			}
+
+			key_params += prop.Type + " " + camel_name;
+		}
+
+		if (prop.Name == "Name") {
+			name_prop = prop;
+		} else if (prop.Name == "Status") {
+			status_prop = prop;
+		}
+	}
+}
+
+namespace @(Model.Namespace).DAL.Repositories {
+	public partial interface I@(Model.PluralName)Repository {
+		Task<int> CountAsync ();
+		Task<IList<@(Model.Name)>> AllAsync ();
+		Task<@(Model.Name)> FindAsync (@key_params);
+@foreach (var prop in Model.Properties) {
+	if (prop.IsFilter) {
+<text>		Task<IList<@(Model.Name)>> FindBy@(prop.Name)Async (@prop.Type @prop.ArgumentName);
+</text>
+	}
+}
+		Task<int> AddAsync (@(Model.Name) entity);
+		Task<int> UpdateAsync (@(Model.Name) entity);
+		Task<int> DeleteAsync (@key_params);
+		Task<int> DeleteAsync (@(Model.Name) entity);
+@foreach (var method in Model.Methods) {
+	if(method.IsSingleResult) {
+<text>		Task<@Raw(method.Type)> @(method.Name)Async (@Raw(method.Arguments));</text>
+	} else {
+<text>		Task<List<@Raw(method.Type)>> @(method.Name)Async (@Raw(method.Arguments));</text>
+	}
+<text>
+</text>
+}
+	}
+}

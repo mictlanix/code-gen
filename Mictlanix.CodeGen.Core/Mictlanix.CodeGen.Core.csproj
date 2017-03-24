@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+	<TargetFramework>netcoreapp1.1</TargetFramework>
+	<DefineConstants>DEBUG;TRACE</DefineConstants>
+	<PreserveCompilationContext>true</PreserveCompilationContext>
+	<Description>Package Description</Description>
+	<RootNamespace>Mictlanix.CodeGen.Core</RootNamespace>
+	<AssemblyName>Mictlanix.CodeGen.Core</AssemblyName>
+  </PropertyGroup>
+	
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath></OutputPath>
+    <WarningLevel></WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Templates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Entity.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Repository.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\RepositoryBase.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\IRepository.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\IUnitOfWork.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\UnitOfWork.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mictlanix.CodeGen.Entities\Mictlanix.CodeGen.Entities.csproj">
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="RazorLight" Version="1.0.0-rc2" />
+  </ItemGroup>
+</Project>
