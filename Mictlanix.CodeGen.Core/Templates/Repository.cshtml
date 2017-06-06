@@ -27,9 +27,9 @@ using Dapper;
 			prop_params += ", ";
 		}
 
-		columns += prop.Column;
+		columns += "`" + prop.Column + "`";
 		prop_params += "@" + prop.Name;
-		columns_aliases += prop.Column + " " + prop.Name;
+		columns_aliases += "`" + prop.Column + "` `" + prop.Name + "`";
 
 		if (prop.IsPrimaryKey) {
 			if (key_obj.Length > 0) {
@@ -40,13 +40,13 @@ using Dapper;
 
 			key_obj += prop.Name + " = " + prop.ArgumentName;
 			key_params += prop.Type + " " + prop.ArgumentName;
-			where_clause += prop.Column + " = @" + prop.Name;
+			where_clause += "`" + prop.Column + "` = @" + prop.Name;
 		} else {
 			if (set_clause.Length > 0) {
 				set_clause += ", ";
 			}
 
-			set_clause += prop.Column + " = @" + prop.Name;
+			set_clause += "`" + prop.Column + "` = @" + prop.Name;
 		}
 	}
 }
@@ -54,20 +54,20 @@ using Dapper;
 namespace @(Model.Namespace).DAL.Repositories {
 	public partial class @(Model.PluralName)Repository : RepositoryBase, I@(Model.PluralName)Repository {
 		internal const string query_columns = "@columns_aliases";
-		internal const string query_count = "SELECT COUNT(*) FROM @Model.Table";
-		internal const string query_all = "SELECT " + query_columns + " FROM @Model.Table";
-		internal const string query_find = "SELECT " + query_columns + " FROM @Model.Table WHERE @where_clause";
+		internal const string query_count = "SELECT COUNT(*) FROM `@Model.Table`";
+		internal const string query_all = "SELECT " + query_columns + " FROM `@Model.Table`";
+		internal const string query_find = "SELECT " + query_columns + " FROM `@Model.Table` WHERE @where_clause";
 @foreach (var prop in Model.Properties) {
 	if (prop.IsFilter) {
-<text>		internal const string query_find_@prop.Column = "SELECT " + query_columns + " FROM @Model.Table WHERE @prop.Column = @@@prop.Name";
+<text>		internal const string query_find_@prop.Column = "SELECT " + query_columns + " FROM `@Model.Table` WHERE @prop.Column = @@@prop.Name";
 </text>
 	}
 }
-		internal const string query_add = "INSERT INTO @Model.Table (@columns) " + 
-							 			  "VALUES (@prop_params)";
-		internal const string query_update = "UPDATE @Model.Table SET @set_clause " + 
-					    					 "WHERE @where_clause";
-		internal const string query_delete = "DELETE FROM @Model.Table WHERE @where_clause";
+		internal const string query_add = "INSERT INTO `@Model.Table` (@columns) " + 
+						  "VALUES (@prop_params)";
+		internal const string query_update = "UPDATE `@Model.Table` SET @set_clause " + 
+						     "WHERE @where_clause";
+		internal const string query_delete = "DELETE FROM `@Model.Table` WHERE @where_clause";
 
 		public @(Model.PluralName)Repository (DbConnection connection) : base (connection)
 		{
