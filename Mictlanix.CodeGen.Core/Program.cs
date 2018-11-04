@@ -6,17 +6,27 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Mictlanix.CodeGen.Entities;
 using RazorLight;
+using System.Threading.Tasks;
 
 namespace Mictlanix.CodeGen.Core {
 	class Program {
 		static void Main (string [] args)
+		{
+			new Program ().Run (args).Wait ();
+		}
+
+		public async Task Run (string [] args)
 		{
 			var ns = args [0];
 			var json = GetJson (args [1]);
 			var output_directory = args [2];
 			var entities = JsonConvert.DeserializeObject<List<Entity>> (json);
 			var tpl_path = Path.Combine (Directory.GetCurrentDirectory (), "Templates");
-			var engine = EngineFactory.CreatePhysical (tpl_path);
+			var engine = new RazorLightEngineBuilder ()
+					.UseFilesystemProject ("/Users/eddy/Projects/code-gen/Mictlanix.CodeGen.Core/Templates")
+				      .UseMemoryCachingProvider ()
+				      .Build ();
+			//var engine = EngineFactory.CreatePhysical (tpl_path);
 
 			if (Directory.Exists (output_directory)) {
 				Directory.Delete (output_directory, true);
@@ -27,11 +37,11 @@ namespace Mictlanix.CodeGen.Core {
 			Directory.CreateDirectory (Path.Combine (output_directory, "Repositories"));
 
 			File.WriteAllText (Path.Combine (output_directory, "IUnitOfWork.cs"),
-					   engine.Parse ("IUnitOfWork.cshtml", new { Namespace = ns }));
+					   await engine.CompileRenderAsync ("IUnitOfWork.cshtml", new { Namespace = ns }));
 			File.WriteAllText (Path.Combine (output_directory, "UnitOfWork.cs"),
-					   engine.Parse ("UnitOfWork.cshtml", new { Namespace = ns, Entities = entities }));
+					   await engine.CompileRenderAsync ("UnitOfWork.cshtml", new { Namespace = ns, Entities = entities }));
 			File.WriteAllText (Path.Combine (output_directory, "Repositories", "RepositoryBase.cs"),
-					   engine.Parse ("RepositoryBase.cshtml", new { Namespace = ns }));
+					   await engine.CompileRenderAsync ("RepositoryBase.cshtml", new { Namespace = ns }));
 
 			foreach (var entity in entities) {
 				var model = new {
@@ -43,11 +53,13 @@ namespace Mictlanix.CodeGen.Core {
 					Namespace = ns
 				};
 
-				File.WriteAllText (Path.Combine (output_directory, "Entities", entity.Name + ".cs"), engine.Parse ("Entity.cshtml", model));
-				File.WriteAllText (Path.Combine (output_directory, "Repositories", "I" + entity.PluralName + "Repository.cs"), engine.Parse ("IRepository.cshtml", model));
-				File.WriteAllText (Path.Combine (output_directory, "Repositories", entity.PluralName + "Repository.cs"), engine.Parse ("Repository.cshtml", model));
+				File.WriteAllText (Path.Combine (output_directory, "Entities", entity.Name + ".cs"), await engine.CompileRenderAsync ("Entity.cshtml", model));
+				File.WriteAllText (Path.Combine (output_directory, "Repositories", "I" + entity.PluralName + "Repository.cs"), await engine.CompileRenderAsync ("IRepository.cshtml", model));
+				File.WriteAllText (Path.Combine (output_directory, "Repositories", entity.PluralName + "Repository.cs"), await engine.CompileRenderAsync ("Repository.cshtml", model));
 			}
 		}
+
+
 
 		static string GetJson (string filename)
 		{
