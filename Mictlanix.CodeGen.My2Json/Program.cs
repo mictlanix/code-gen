@@ -17,6 +17,9 @@ namespace Mictlanix.CodeGen.My2Json {
 				ContractResolver = new WritablePropertiesOnlyResolver ()
 			};
 
+			Console.WriteLine ($"ConnStr: {args [0]}");
+			Console.WriteLine ($" Output: {args [1]}");
+
 			try {
 				var entities = GetEntities (args [0]);
 				var json = JsonConvert.SerializeObject (entities, settings);
@@ -129,6 +132,8 @@ namespace Mictlanix.CodeGen.My2Json {
 			case "date":
 			case "datetime":
 				return isNull ? "DateTime?" : "DateTime";
+			case "time":
+				return isNull ? "TimeSpan?" : "TimeSpan";
 			default:
 				return "object";
 			}
