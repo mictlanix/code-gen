@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using Mictlanix.CodeGen.Entities;
 using RazorLight;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Mictlanix.CodeGen.Core {
 	class Program {
@@ -21,11 +22,11 @@ namespace Mictlanix.CodeGen.Core {
 			var json = GetJson (args [1]);
 			var output_directory = args [2];
 			var entities = JsonConvert.DeserializeObject<List<Entity>> (json);
-			var tpl_path = Path.Combine (Directory.GetCurrentDirectory (), "Templates");
+			var tpl_path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Templates");
 			var engine = new RazorLightEngineBuilder ()
-					.UseFilesystemProject ("/Users/eddy/Projects/code-gen/Mictlanix.CodeGen.Core/Templates")
-				      .UseMemoryCachingProvider ()
-				      .Build ();
+					.UseFileSystemProject (tpl_path)
+				    .UseMemoryCachingProvider ()
+				    .Build ();
 			//var engine = EngineFactory.CreatePhysical (tpl_path);
 
 			if (Directory.Exists (output_directory)) {

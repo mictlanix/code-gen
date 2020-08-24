@@ -41,7 +41,7 @@ namespace @(Model.Namespace).DAL.Repositories {
 		Task<@(Model.Name)> FindAsync (@key_params);
 @foreach (var prop in Model.Properties) {
 	if (prop.IsFilter) {
-<text>		Task<IList<@(Model.Name)>> FindBy@(prop.Name)Async (@prop.Type @prop.ArgumentName);
+<text>		Task@(Raw("<"))IList<@(Model.Name)>> FindBy@(prop.Name)Async (@prop.Type @prop.ArgumentName);
 </text>
 	}
 }
@@ -53,7 +53,7 @@ namespace @(Model.Namespace).DAL.Repositories {
 	if(method.IsSingleResult) {
 <text>		Task<@Raw(method.Type)> @(method.Name)Async (@Raw(method.Arguments));</text>
 	} else {
-<text>		Task<List<@Raw(method.Type)>> @(method.Name)Async (@Raw(method.Arguments));</text>
+<text>		Task@(Raw("<"))List<@Raw(method.Type)>> @(method.Name)Async (@Raw(method.Arguments));</text>
 	}
 <text>
 </text>

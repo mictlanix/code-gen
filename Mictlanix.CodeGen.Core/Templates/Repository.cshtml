@@ -35,7 +35,7 @@ using Dapper;
 			if (key_obj.Length > 0) {
 				key_obj += ", ";
 				key_params += ", ";
-				where_clause += ", ";
+				where_clause += " AND ";
 			}
 
 			key_obj += prop.Name + " = " + prop.ArgumentName;
@@ -96,7 +96,7 @@ namespace @(Model.Namespace).DAL.Repositories {
 
 @foreach (var prop in Model.Properties) {
 	if (prop.IsFilter) {
-<text>		public async Task<IList<@(Model.Name)>> FindBy@(prop.Name)Async (@prop.Type @prop.ArgumentName)
+<text>		public async Task@(Raw("<"))IList<@(Model.Name)>> FindBy@(prop.Name)Async (@prop.Type @prop.ArgumentName)
 		{
 			var query = await Connection.QueryAsync<@(Model.Name)> (query_find_@prop.Column, new { @prop.Name = @prop.ArgumentName }, transaction: Transaction).ConfigureAwait (false);
 			return query.ToList ();
@@ -130,7 +130,7 @@ namespace @(Model.Namespace).DAL.Repositories {
 		public async Task<@Raw(method.Type)> @(method.Name)Async (@Raw(method.Arguments))</text>
 	} else {
 <text>
-		public async Task<List<@Raw(method.Type)>> @(method.Name)Async (@Raw(method.Arguments))</text>
+		public async Task@(Raw("<"))List<@Raw(method.Type)>> @(method.Name)Async (@Raw(method.Arguments))</text>
 	}
 <text>
 		{
