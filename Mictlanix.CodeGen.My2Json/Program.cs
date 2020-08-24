@@ -60,7 +60,8 @@ namespace Mictlanix.CodeGen.My2Json {
 								IsNullable = "YES".Equals (reader ["IS_NULLABLE"]),
 								Lenght = length == 0 ? null : (int?) length,
 								Precision = precision == 0 ? null : (int?) precision,
-								Scale = scale == 0 ? null : (int?) scale
+								Scale = scale == 0 ? null : (int?) scale,
+								IsFilter = true
 							};
 
 							prop.Type = GetManagedType (prop.DbType, length, prop.IsNullable);
@@ -83,7 +84,7 @@ namespace Mictlanix.CodeGen.My2Json {
 					}
 
 					cmd.CommandText = "select count(*) from information_schema.key_column_usage " +
-							"where table_schema = '" + conn.Database + "' and constraint_name <> 'primary' and " +
+							"where table_schema = '" + conn.Database + "' and constraint_name <> 'primary' and referenced_column_name is not null and " +
 							"table_name = @table and column_name = @column";
 					cmd.Parameters.Add ("table", MySqlDbType.VarString);
 					cmd.Parameters.Add ("column", MySqlDbType.VarString);
@@ -96,7 +97,9 @@ namespace Mictlanix.CodeGen.My2Json {
 							cmd.Parameters ["column"].Value = prop.Column;
 
 							if ((long) cmd.ExecuteScalar () > 0) {
-								prop.Name += "Id";
+								if (!prop.IsPrimaryKey) {
+									prop.Name += "Id";
+								}
 								prop.IsFilter = true;
 							}
 						}
@@ -120,6 +123,8 @@ namespace Mictlanix.CodeGen.My2Json {
 				return length == 16 ? (isNull ? "Guid?" : "Guid") : "byte[]";
 			case "char":
 				return length == 36 ? (isNull ? "Guid?" : "Guid") : (length == 1 ? (isNull ? "char?" : "char") : "string");
+			case "bigint":
+				return isNull ? "long?" : "long";
 			case "int":
 				return isNull ? "int?" : "int";
 			case "tinyint":
