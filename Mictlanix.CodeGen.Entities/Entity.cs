@@ -14,7 +14,7 @@ namespace Mictlanix.CodeGen.Entities {
 
 		public string PluralName {
 			get {
-				if (Name.EndsWith ("y", System.StringComparison.Ordinal)) {
+				if (Name.EndsWith ("y", System.StringComparison.Ordinal) && !"aeiou".Contains (Name[Name.Length - 2])) {
 					return Name.Substring (0, Name.Length - 1) + "ies";
 				}
 

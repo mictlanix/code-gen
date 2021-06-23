@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using @(Model.Namespace).Common;
 using @(Model.Namespace).Entities;
-using Dapper;
+using @(Model.Name) = @(Model.Namespace).Entities.@(Model.Name);
 @{
 	var key = "";
 	var columns = "";

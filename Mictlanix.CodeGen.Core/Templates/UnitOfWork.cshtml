@@ -63,7 +63,7 @@ namespace @(Model.Namespace).DAL {
 			try {
 				transaction.Commit ();
 			} catch {
-				transaction.Commit ();
+				transaction.Rollback ();
 				throw;
 			} finally {
 				transaction.Dispose ();

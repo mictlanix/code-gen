@@ -75,7 +75,7 @@ namespace Mictlanix.CodeGen.My2Json {
 								entities.Add (entity);
 							}
 
-							if (prop.Type == "bool") {
+							if (prop.Type == "bool" && !column_name.StartsWith ("is_")) {
 								prop.Name = "Is" + prop.Name;
 							}
 

@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<TargetFramework>net5.0</TargetFramework>
 	<DefineConstants>DEBUG;TRACE</DefineConstants>
 	<PreserveCompilationContext>true</PreserveCompilationContext>
 	<Description>Package Description</Description>
 	<RootNamespace>Mictlanix.CodeGen.Core</RootNamespace>
 	<AssemblyName>Mictlanix.CodeGen.Core</AssemblyName>
+	<Configurations>Release;Debug</Configurations>
   </PropertyGroup>
 	
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -42,12 +43,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="RazorLight" Version="2.0.0-beta9" />
+    <PackageReference Include="RazorLight" Version="2.0.0-rc.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Templates\Entity %28copy%29.cshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
