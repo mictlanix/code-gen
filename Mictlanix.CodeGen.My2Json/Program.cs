@@ -112,35 +112,43 @@ namespace Mictlanix.CodeGen.My2Json {
 
 				}
 			}
-
+			
 			return entities;
 		}
 
 		static string GetManagedType (string dbType, ulong length, bool isNull)
 		{
-			switch (dbType.ToLower ()) {
-			case "binary":
-				return length == 16 ? (isNull ? "Guid?" : "Guid") : "byte[]";
-			case "char":
-				return length == 36 ? (isNull ? "Guid?" : "Guid") : (length == 1 ? (isNull ? "char?" : "char") : "string");
-			case "bigint":
-				return isNull ? "long?" : "long";
-			case "int":
-				return isNull ? "int?" : "int";
-			case "tinyint":
-				return isNull ? "bool?" : "bool";
-			case "decimal":
-				return isNull ? "decimal?" : "decimal";
-			case "varchar":
-			case "text":
-				return "string";
-			case "date":
-			case "datetime":
-				return isNull ? "DateTime?" : "DateTime";
-			case "time":
-				return isNull ? "TimeSpan?" : "TimeSpan";
-			default:
-				return "object";
+			switch (dbType.ToLower()) {
+				case "blob":
+					return "byte[]";
+				case "binary":
+					return length == 16 ? (isNull ? "Guid?" : "Guid") : "byte[]";
+				case "char":
+					return length == 36 ? (isNull ? "Guid?" : "Guid") : (length == 1 ? (isNull ? "char?" : "char") : "string");
+				case "bigint":
+					return isNull ? "long?" : "long";
+				case "int":
+				case "smallint":
+					return isNull ? "int?" : "int";
+				case "tinyint":
+					return isNull ? "bool?" : "bool";
+				case "float":
+					return isNull ? "float?" : "float";
+				case "double":
+					return isNull ? "double?" : "double";
+				case "decimal":
+					return isNull ? "decimal?" : "decimal";
+				case "varchar":
+				case "longtext":
+				case "text":
+					return "string";
+				case "date":
+				case "datetime":
+					return isNull ? "DateTime?" : "DateTime";
+				case "time":
+					return isNull ? "TimeSpan?" : "TimeSpan";
+				default:
+					return "object";
 			}
 		}
 	}
