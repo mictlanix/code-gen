@@ -144,6 +144,7 @@ namespace Mictlanix.CodeGen.My2Json {
 					return "string";
 				case "date":
 				case "datetime":
+				case "timestamp":
 					return isNull ? "DateTime?" : "DateTime";
 				case "time":
 					return isNull ? "TimeSpan?" : "TimeSpan";
