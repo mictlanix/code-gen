@@ -107,12 +107,24 @@ namespace @(Model.Namespace).DAL {
 				await connection.OpenAsync ().ConfigureAwait (false);
 			}
 
-			using (var cmd = connection.CreateCommand ()) {
-				cmd.CommandText = "SET unique_checks = " + (state ? "1" : "0");
-				await cmd.ExecuteNonQueryAsync ().ConfigureAwait (false);
-				cmd.CommandText = "SET foreign_key_checks = " + (state ? "1" : "0");
-				await cmd.ExecuteNonQueryAsync ().ConfigureAwait (false);
+			using var cmd = connection.CreateCommand ();
+			cmd.Transaction = transaction;
+			cmd.CommandText = "SET unique_checks = " + (state ? "1" : "0");
+			await cmd.ExecuteNonQueryAsync ().ConfigureAwait (false);
+			cmd.CommandText = "SET foreign_key_checks = " + (state ? "1" : "0");
+			await cmd.ExecuteNonQueryAsync ().ConfigureAwait (false);
+		}
+
+		public async Task SetLogBinAsync (bool state)
+		{
+			if (connection.State == ConnectionState.Closed) {
+				await connection.OpenAsync ().ConfigureAwait (false);
 			}
+
+			using var cmd = connection.CreateCommand ();
+			cmd.Transaction = transaction;
+			cmd.CommandText = "SET SQL_LOG_BIN = " + (state ? "1" : "0");
+			await cmd.ExecuteNonQueryAsync ().ConfigureAwait (false);
 		}
 
 		public void Dispose ()
