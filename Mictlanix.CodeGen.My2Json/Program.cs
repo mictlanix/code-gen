@@ -75,8 +75,12 @@ namespace Mictlanix.CodeGen.My2Json {
 								entities.Add (entity);
 							}
 
-							if (prop.Type == "bool" && !column_name.StartsWith ("is_")) {
-								prop.Name = "Is" + prop.Name;
+							if (prop.Type == "bool" && !column_name.StartsWith ("is_") && !column_name.StartsWith ("can_") && !column_name.StartsWith ("has_")) {
+								if (column_name.EndsWith ("s")) {
+									prop.Name = "Has" + prop.Name;
+								} else {
+									prop.Name = "Is" + prop.Name;
+								}
 							}
 
 							entity.Properties.Add (prop);
@@ -118,38 +122,39 @@ namespace Mictlanix.CodeGen.My2Json {
 
 		static string GetManagedType (string dbType, ulong length, bool isNull)
 		{
-			switch (dbType.ToLower()) {
-				case "blob":
-					return "byte[]";
-				case "binary":
-					return length == 16 ? (isNull ? "Guid?" : "Guid") : "byte[]";
-				case "char":
-					return length == 36 ? (isNull ? "Guid?" : "Guid") : (length == 1 ? (isNull ? "char?" : "char") : "string");
-				case "bigint":
-					return isNull ? "long?" : "long";
-				case "int":
-				case "smallint":
-					return isNull ? "int?" : "int";
-				case "tinyint":
-					return isNull ? "bool?" : "bool";
-				case "float":
-					return isNull ? "float?" : "float";
-				case "double":
-					return isNull ? "double?" : "double";
-				case "decimal":
-					return isNull ? "decimal?" : "decimal";
-				case "varchar":
-				case "longtext":
-				case "text":
-					return "string";
-				case "date":
-				case "datetime":
-				case "timestamp":
-					return isNull ? "DateTime?" : "DateTime";
-				case "time":
-					return isNull ? "TimeSpan?" : "TimeSpan";
-				default:
-					return "object";
+			switch (dbType.ToLower ()) {
+			case "blob":
+				return "byte[]";
+			case "binary":
+				return length == 16 ? (isNull ? "Guid?" : "Guid") : "byte[]";
+			case "char":
+				return length == 36 ? (isNull ? "Guid?" : "Guid") : (length == 1 ? (isNull ? "char?" : "char") : "string");
+			case "bigint":
+				return isNull ? "long?" : "long";
+			case "int":
+			case "smallint":
+				return isNull ? "int?" : "int";
+			case "tinyint":
+				return isNull ? "bool?" : "bool";
+			case "float":
+				return isNull ? "float?" : "float";
+			case "double":
+				return isNull ? "double?" : "double";
+			case "decimal":
+				return isNull ? "decimal?" : "decimal";
+			case "varchar":
+			case "text":
+			case "mediumtext":
+			case "longtext":
+				return "string";
+			case "date":
+			case "datetime":
+			case "timestamp":
+				return isNull ? "DateTime?" : "DateTime";
+			case "time":
+				return isNull ? "TimeSpan?" : "TimeSpan";
+			default:
+				return "object";
 			}
 		}
 	}
